@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Arlecchino",
+    "description": "An acrobatic, mischievous, and resourceful servant. Often in love and always hungry. Wears a colorful patched costume.",
+    "imageDataUri": "https://placehold.co/400x400/E89F65/FFFFFF.png"
+  },
+  {
+    "name": "Pantalone",
+    "description": "A greedy, wealthy, and lecherous old merchant from Venice. He is often the father of one of the lovers and is constantly being tricked.",
+    "imageDataUri": "https://placehold.co/400x400/D84A3B/FFFFFF.png"
+  },
+  {
+    "name": "Il Dottore",
+    "description": "A self-proclaimed 'doctor' who is comically inept and loves to show off his supposed knowledge with Latin phrases. He is often a friend of Pantalone.",
+    "imageDataUri": "https://placehold.co/400x400/3A3A3A/FFFFFF.png"
+  },
+  {
+    "name": "Columbina",
+    "description": "A clever and cheeky maidservant. She is often Arlecchino's lover and the only truly intelligent person on stage.",
+    "imageDataUri": "https://placehold.co/400x400/F0E2B6/333333.png"
+  },
+  {
+    "name": "Il Capitano",
+    "description": "A bragging, swaggering, and cowardly soldier who boasts of his great feats in love and war but is terrified of his own shadow.",
+    "imageDataUri": "https://placehold.co/400x400/8E9B6A/FFFFFF.png"
+  }
+]
