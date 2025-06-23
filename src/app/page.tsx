@@ -11,6 +11,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { getCharacterDataWithImages } from './actions';
+import { useToast } from '@/hooks/use-toast';
 
 type Character = {
   name: string;
@@ -42,6 +43,7 @@ export default function Home() {
   const [characterInfo, setCharacterInfo] = useState<SearchCharacterInfoOutput | null>(null);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     async function loadCharacterData() {
@@ -74,7 +76,11 @@ export default function Home() {
 
   const handleCompare = async () => {
     if (!userPhoto || !characters) {
-      setError("사진을 업로드하고 캐릭터 데이터가 준비되어야 합니다.");
+      toast({
+          variant: "destructive",
+          title: "오류",
+          description: "사진을 업로드하고 캐릭터 데이터가 준비되어야 합니다.",
+      });
       return;
     }
     setIsLoading(true);
@@ -82,10 +88,9 @@ export default function Home() {
 
     const charactersForAi = characters
       .filter(c => !c.imageError)
-      .map(({ name, description, imageDataUriForAi }) => ({
+      .map(({ name, description }) => ({
         name,
         description,
-        imageDataUri: imageDataUriForAi,
       }));
 
     if (charactersForAi.length === 0) {
@@ -123,7 +128,11 @@ export default function Home() {
 
     } catch (e: any) {
       console.error(e);
-      setError('AI 분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      toast({
+          variant: "destructive",
+          title: "AI 분석 오류",
+          description: "AI 분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+      });
       setAiResult(null);
       setCharacterInfo(null);
     } finally {
@@ -193,13 +202,6 @@ export default function Home() {
         <CardDescription>어떤 이탈리안 브레인롯 캐릭터와 닮았는지 AI가 분석해드립니다.</CardDescription>
       </CardHeader>
       <CardContent className="px-6 pb-6">
-        {error && (
-            <Alert variant="destructive" className="mb-4">
-              <AlertTriangle className="h-4 w-4" />
-              <AlertTitle>오류</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-        )}
         <div 
           className="flex flex-col items-center justify-center w-full p-8 border-2 border-dashed rounded-lg cursor-pointer border-primary/30 hover:bg-primary/5 transition-colors"
           onClick={() => fileInputRef.current?.click()}

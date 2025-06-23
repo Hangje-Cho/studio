@@ -14,9 +14,9 @@ const ComparePhotoToCharactersInputSchema = z.object({
   photoDataUri: z
     .string()
     .describe(
-      'A photo of the user, as a data URI that must include a MIME type and use Base64 encoding. Expected format: \'data:<mimetype>;base64,<encoded_data>\'.'
+      "A photo of the user, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
     ),
-  characterJsonData: z.string().describe('A JSON string containing an array of character objects, each with a name, description, and imageDataUri.'),
+  characterJsonData: z.string().describe('A JSON string containing an array of character objects, each with a name and description.'),
 });
 export type ComparePhotoToCharactersInput = z.infer<typeof ComparePhotoToCharactersInputSchema>;
 
@@ -39,12 +39,32 @@ const prompt = ai.definePrompt({
   Here is the user's photo:
   {{media url=photoDataUri}}
 
-  Here are the characters:
+  Here are the characters (name and description only):
   {{characterJsonData}}
 
-  Based on the user's photo and the character data, determine which character the user most resembles and provide a funny explanation of the similarities. Only return one most similar character.
+  Based on the user's photo and the character descriptions, determine which character the user most resembles. Look for visual cues in the photo that match the character descriptions. Provide a funny explanation of the similarities. Only return one most similar character.
   Your response must include the name of the character from the provided data.
   `,
+  config: {
+    safetySettings: [
+      {
+        category: 'HARM_CATEGORY_HATE_SPEECH',
+        threshold: 'BLOCK_ONLY_HIGH',
+      },
+      {
+        category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
+        threshold: 'BLOCK_NONE',
+      },
+      {
+        category: 'HARM_CATEGORY_HARASSMENT',
+        threshold: 'BLOCK_MEDIUM_AND_ABOVE',
+      },
+      {
+        category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+        threshold: 'BLOCK_LOW_AND_ABOVE',
+      },
+    ],
+  },
 });
 
 const comparePhotoToCharactersFlow = ai.defineFlow(
