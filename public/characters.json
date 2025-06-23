@@ -1,17 +1,23 @@
+
 [
-    {
-        "name": "기가채드 (Gigachad)",
-        "description": "압도적인 남성미와 강인한 턱선을 자랑하는 캐릭터.",
-        "imageDataUri": "/character_images/gigachad.png"
-    },
-    {
-        "name": "스키비디 토일렛 (Skibidi Toilet)",
-        "description": "변기에서 튀어나와 기괴한 노래를 부르는 캐릭터.",
-        "imageDataUri": "/character_images/skibidi_toilet.png"
-    },
-    {
-        "name": "카피바라 (Capybara)",
-        "description": "온화하고 친화력 좋은 성격으로 모든 동물과 친구가 되는 캐릭터.",
-        "imageDataUri": "/character_images/capybara.png"
-    }
+  {
+    "name": "기가채드 (Gigachad)",
+    "description": "압도적인 남성미와 강인한 턱선을 자랑하는 인터넷 밈 캐릭터입니다.",
+    "imageDataUri": "/character_images/1.png"
+  },
+  {
+    "name": "스키비디 토일렛 (Skibidi Toilet)",
+    "description": "변기에서 튀어나와 노래를 부르는 기괴하고 중독성 있는 캐릭터입니다.",
+    "imageDataUri": "/character_images/2.png"
+  },
+  {
+    "name": "카피바라 (Capybara)",
+    "description": "모든 동물과 평화롭게 지내는 온화하고 친화력 높은 캐릭터입니다.",
+    "imageDataUri": "/character_images/3.png"
+  },
+  {
+    "name": "알 수 없는 캐릭터",
+    "description": "이미지 파일이 누락된 캐릭터입니다.",
+    "imageDataUri": "/character_images/4.png"
+  }
 ]
