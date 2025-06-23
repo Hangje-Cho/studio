@@ -17,6 +17,7 @@ type Character = {
   description: string;
   imageDataUriForAi: string; // base64 for AI
   originalImageDataUri: string; // path for <Image> component
+  imageError: boolean;
 };
 
 type DisplayResult = {
@@ -79,11 +80,20 @@ export default function Home() {
     setIsLoading(true);
     setError(null);
 
-    const charactersForAi = characters.map(({ name, description, imageDataUriForAi }) => ({
-      name,
-      description,
-      imageDataUri: imageDataUriForAi,
-    }));
+    const charactersForAi = characters
+      .filter(c => !c.imageError)
+      .map(({ name, description, imageDataUriForAi }) => ({
+        name,
+        description,
+        imageDataUri: imageDataUriForAi,
+      }));
+
+    if (charactersForAi.length === 0) {
+        setError("AI와 비교할 수 있는 캐릭터 이미지가 하나도 없습니다. `public/character_images` 폴더에 이미지를 추가하고 `public/characters.json` 파일의 경로가 올바른지 확인해주세요.");
+        setIsLoading(false);
+        return;
+    }
+
     const characterJsonStringForAi = JSON.stringify(charactersForAi);
 
     try {
@@ -149,7 +159,7 @@ export default function Home() {
           </AlertDescription>
         </Alert>
         <p className="mt-4">
-          오류 메시지를 확인하고 문제를 해결해주세요. 보통 `public` 폴더에 `characters.json` 파일이 없거나, 그 파일에 지정된 캐릭터 이미지가 `public` 폴더 내에 없을 때 발생합니다.
+          오류 메시지를 확인하고 문제를 해결해주세요. 보통 `public` 폴더에 `characters.json` 파일이 없거나, 그 파일에 지정된 캐릭터 이미지가 `public/character_images` 폴더 내에 없을 때 발생합니다.
         </p>
         <p className="mt-2">
             `public/characters.json` 파일이 아래와 같은 형식인지, `imageDataUri`에 지정된 이미지 파일 경로가 올바른지 확인해주세요.
@@ -183,6 +193,13 @@ export default function Home() {
         <CardDescription>어떤 이탈리안 브레인롯 캐릭터와 닮았는지 AI가 분석해드립니다.</CardDescription>
       </CardHeader>
       <CardContent className="px-6 pb-6">
+        {error && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle>오류</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+        )}
         <div 
           className="flex flex-col items-center justify-center w-full p-8 border-2 border-dashed rounded-lg cursor-pointer border-primary/30 hover:bg-primary/5 transition-colors"
           onClick={() => fileInputRef.current?.click()}
