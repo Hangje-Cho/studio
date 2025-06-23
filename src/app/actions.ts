@@ -42,7 +42,10 @@ export async function getCharacterDataWithImages() {
 
   const charactersWithImageData = await Promise.all(
     characters.map(async (char) => {
-      const imagePath = path.join(process.cwd(), 'public', char.imageDataUri);
+      const relativeImagePath = char.imageDataUri.startsWith('/')
+        ? char.imageDataUri.slice(1)
+        : char.imageDataUri;
+      const imagePath = path.join(process.cwd(), 'public', relativeImagePath);
       try {
         const imageBuffer = await fs.readFile(imagePath);
         const base64Image = imageBuffer.toString('base64');
