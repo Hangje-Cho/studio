@@ -210,7 +210,7 @@ export default function Home() {
         >
           {userPhoto ? (
             <div className="relative w-40 h-40 rounded-full overflow-hidden shadow-md">
-              <Image src={userPhoto} alt="업로드된 사진" layout="fill" objectFit="cover" />
+              <Image src={userPhoto} alt="업로드된 사진" fill style={{ objectFit: 'cover' }} />
             </div>
           ) : (
             <div className="text-center">
@@ -251,13 +251,13 @@ export default function Home() {
                 <div className="flex flex-col items-center gap-4">
                     <h3 className="font-headline text-xl">당신의 사진</h3>
                     <div className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden shadow-lg border-4 border-white">
-                        <Image src={userPhoto!} alt="사용자 사진" layout="fill" objectFit="cover" />
+                        <Image src={userPhoto!} alt="사용자 사진" fill style={{ objectFit: 'cover' }} />
                     </div>
                 </div>
                 <div className="flex flex-col items-center gap-4">
                     <h3 className="font-headline text-xl">닮은 캐릭터</h3>
                     <div className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden shadow-lg border-4 border-white">
-                        <Image src={aiResult!.characterImageDataUri} alt={aiResult!.characterName} layout="fill" objectFit="cover" data-ai-hint="portrait character"/>
+                        <Image src={aiResult!.characterImageDataUri} alt={aiResult!.characterName} fill style={{ objectFit: 'cover' }} data-ai-hint="portrait character"/>
                     </div>
                 </div>
             </div>
