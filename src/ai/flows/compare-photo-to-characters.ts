@@ -23,7 +23,6 @@ export type ComparePhotoToCharactersInput = z.infer<typeof ComparePhotoToCharact
 const ComparePhotoToCharactersOutputSchema = z.object({
   resemblanceExplanation: z.string().describe('A humorous explanation of why the user resembles the chosen character.'),
   characterName: z.string().describe('The name of the character the user resembles most.'),
-  characterImageDataUri: z.string().describe('The data URI of the character image.'),
 });
 export type ComparePhotoToCharactersOutput = z.infer<typeof ComparePhotoToCharactersOutputSchema>;
 
@@ -44,8 +43,7 @@ const prompt = ai.definePrompt({
   {{characterJsonData}}
 
   Based on the user's photo and the character data, determine which character the user most resembles and provide a funny explanation of the similarities. Only return one most similar character.
-
-  Ensure that the characterName and characterImageDataUri fields are populated with the correct values from the characterJsonData.
+  Your response must include the name of the character from the provided data.
   `,
 });
 

@@ -1,17 +1,18 @@
+
 [
   {
-    "name": "기가채드",
-    "description": "헬스장에서 사는 듯한 엄청난 근육질의 남성. 강인함과 자신감의 상징.",
-    "imageDataUri": "/characters/gigachad.png"
+    "name": "기가채드 (Gigachad)",
+    "description": "상남자 중의 상남자. 모든 밈의 알파이자 오메가입니다.",
+    "imageDataUri": "/character_images/gigachad.png"
   },
   {
-    "name": "스키비디 토일렛",
-    "description": "변기에서 사람 머리가 튀어나온 기괴하고 중독성 있는 캐릭터. 예측할 수 없는 행동을 보임.",
-    "imageDataUri": "/characters/skibidi_toilet.png"
+    "name": "스키비디 토일렛 (Skibidi Toilet)",
+    "description": "한번 들으면 멈출 수 없는 중독성 있는 노래의 주인공. 예측불가능한 매력을 가지고 있습니다.",
+    "imageDataUri": "/character_images/skibidi_toilet.png"
   },
   {
-    "name": "카피바라",
-    "description": "모든 동물과 친하게 지내는 세상에서 가장 평화로운 동물. 극강의 친화력과 여유로움을 자랑함.",
-    "imageDataUri": "/characters/capybara.png"
+    "name": "카피바라 (Capybara)",
+    "description": "세상의 모든 동물과 친구가 되는 궁극의 친화력. 당신은 모든 사람들에게 편안함을 줍니다.",
+    "imageDataUri": "/character_images/capybara.png"
   }
 ]

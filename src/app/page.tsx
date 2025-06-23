@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { Brain, UploadCloud, FileJson, Clapperboard, Sparkles, RotateCw, User, Wand2 } from 'lucide-react';
+import { Brain, UploadCloud, Clapperboard, Sparkles, RotateCw, User, Wand2, AlertTriangle } from 'lucide-react';
 import { comparePhotoToCharacters, ComparePhotoToCharactersOutput } from '@/ai/flows/compare-photo-to-characters';
 import { searchCharacterInfo, SearchCharacterInfoOutput } from '@/ai/flows/search-character-info';
 import { Button } from '@/components/ui/button';
@@ -17,6 +17,12 @@ type Character = {
   imageDataUri: string;
 };
 
+type DisplayResult = {
+  resemblanceExplanation: string;
+  characterName: string;
+  characterImageDataUri: string;
+};
+
 const Loader = () => (
   <div className="flex flex-col items-center justify-center gap-4 text-center">
     <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-primary"></div>
@@ -27,10 +33,10 @@ const Loader = () => (
 
 export default function Home() {
   const [characters, setCharacters] = useState<Character[] | null>(null);
-  const [characterJsonString, setCharacterJsonString] = useState<string>('');
+  const [characterJsonStringForAi, setCharacterJsonStringForAi] = useState<string>('');
   const [userPhoto, setUserPhoto] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [aiResult, setAiResult] = useState<ComparePhotoToCharactersOutput | null>(null);
+  const [aiResult, setAiResult] = useState<DisplayResult | null>(null);
   const [characterInfo, setCharacterInfo] = useState<SearchCharacterInfoOutput | null>(null);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -42,13 +48,38 @@ export default function Home() {
       try {
         const response = await fetch('/characters.json');
         if (!response.ok) {
-          throw new Error('캐릭터 데이터를 불러오는 데 실패했습니다. `public/characters.json` 파일이 있는지 확인해주세요.');
+          throw new Error('`public/characters.json` 파일을 찾을 수 없습니다. 파일이 해당 위치에 있는지 확인해주세요.');
         }
-        const text = await response.text();
-        const data = JSON.parse(text);
-        setCharacters(data);
-        setCharacterJsonString(text);
+        const characterMetadata: Character[] = await response.json();
+        setCharacters(characterMetadata);
+
+        const charactersForAi = await Promise.all(
+          characterMetadata.map(async (char) => {
+            try {
+              const imageResponse = await fetch(char.imageDataUri);
+              if (!imageResponse.ok) {
+                throw new Error(`'${char.name}' 캐릭터의 이미지 ('${char.imageDataUri}')를 불러오는 데 실패했습니다. 파일이 존재하는지 확인해주세요.`);
+              }
+              const blob = await imageResponse.blob();
+              const reader = new FileReader();
+              const dataUri = await new Promise<string>((resolve, reject) => {
+                reader.onloadend = () => resolve(reader.result as string);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+              });
+              return { ...char, imageDataUri: dataUri };
+            } catch (imageError) {
+              const specificError = new Error(`'${char.name}' 캐릭터의 이미지 ('${char.imageDataUri}')를 불러오는 데 실패했습니다. 파일이 존재하는지 확인해주세요.`);
+              specificError.cause = imageError;
+              throw specificError;
+            }
+          })
+        );
+        
+        setCharacterJsonStringForAi(JSON.stringify(charactersForAi));
+
       } catch (e: any) {
+        console.error(e);
         setError(e.message);
         setCharacters(null);
       } finally {
@@ -70,25 +101,38 @@ export default function Home() {
   };
 
   const handleCompare = async () => {
-    if (!userPhoto || !characterJsonString) {
+    if (!userPhoto || !characterJsonStringForAi) {
       setError("사진을 업로드하고 캐릭터 데이터가 준비되어야 합니다.");
       return;
     }
     setIsLoading(true);
     setError(null);
     try {
-      const comparisonResult = await comparePhotoToCharacters({
+      const comparisonResult: ComparePhotoToCharactersOutput = await comparePhotoToCharacters({
         photoDataUri: userPhoto,
-        characterJsonData: characterJsonString,
+        characterJsonData: characterJsonStringForAi,
       });
-      setAiResult(comparisonResult);
+
+      const matchedCharacter = characters?.find(c => c.name === comparisonResult.characterName);
+
+      if (!matchedCharacter) {
+        throw new Error(`AI가 반환한 캐릭터("${comparisonResult.characterName}")를 로컬 데이터에서 찾을 수 없습니다.`);
+      }
+
+      const resultForDisplay: DisplayResult = {
+        resemblanceExplanation: comparisonResult.resemblanceExplanation,
+        characterName: matchedCharacter.name,
+        characterImageDataUri: matchedCharacter.imageDataUri,
+      };
+
+      setAiResult(resultForDisplay);
 
       const infoResult = await searchCharacterInfo({
         characterName: comparisonResult.characterName,
       });
       setCharacterInfo(infoResult);
 
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
       setError('AI 분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
       setAiResult(null);
@@ -112,16 +156,26 @@ export default function Home() {
     <Card className="w-full max-w-2xl mx-auto animate-fade-in">
       <CardHeader>
         <div className="flex items-center gap-3">
-            <FileJson className="w-8 h-8 text-primary"/>
-            <CardTitle className="font-headline">캐릭터 데이터 설정 안내</CardTitle>
+            <AlertTriangle className="w-8 h-8 text-destructive"/>
+            <CardTitle className="font-headline">앱 설정이 필요합니다</CardTitle>
         </div>
-        <CardDescription>{error}</CardDescription>
+        <CardDescription>앱을 시작하는 데 문제가 발생했습니다.</CardDescription>
       </CardHeader>
       <CardContent>
-        <p className="mb-4">
-          앱을 사용하려면 먼저 캐릭터 데이터를 설정해야 합니다. `public` 폴더에 `character_images` 폴더를 만들고 캐릭터 이미지들을 넣어주세요. 그 다음, `public` 폴더에 `characters.json` 파일을 생성하고 아래와 같은 형식으로 캐릭터 정보를 추가해주세요.
+        <Alert variant="destructive">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>오류 발생</AlertTitle>
+          <AlertDescription>
+            {error || '알 수 없는 오류가 발생했습니다.'}
+          </AlertDescription>
+        </Alert>
+        <p className="mt-4">
+          오류 메시지를 확인하고 문제를 해결해주세요. 보통 `public` 폴더에 `characters.json` 파일이나, 이 파일에 지정된 캐릭터 이미지가 없을 때 발생합니다.
         </p>
-        <pre className="p-4 rounded-md bg-muted text-muted-foreground overflow-x-auto text-sm">
+        <p className="mt-2">
+            `public/characters.json` 파일이 아래와 같은 형식인지, `imageDataUri`에 지정된 이미지 파일이 `public` 폴더 내에 실제로 존재하는지 확인해주세요.
+        </p>
+        <pre className="mt-4 p-4 rounded-md bg-muted text-muted-foreground overflow-x-auto text-sm">
           <code>
 {`[
   {
@@ -129,17 +183,13 @@ export default function Home() {
     "description": "캐릭터에 대한 간단한 설명",
     "imageDataUri": "/character_images/image1.png"
   },
-  {
-    "name": "다른 캐릭터 이름",
-    "description": "이 캐릭터에 대한 또 다른 설명",
-    "imageDataUri": "/character_images/image2.png"
-  }
+  ...
 ]`}
           </code>
         </pre>
       </CardContent>
       <CardFooter>
-          <p className="text-xs text-muted-foreground">파일을 추가한 후 페이지를 새로고침 해주세요.</p>
+          <p className="text-xs text-muted-foreground">파일을 추가하거나 수정한 후 페이지를 새로고침 해주세요.</p>
       </CardFooter>
     </Card>
   );
@@ -249,7 +299,7 @@ export default function Home() {
 
       <main className="flex-1 flex items-center justify-center container mx-auto px-4 py-8">
         {isLoading ? <Loader /> : (
-            !characters ? renderSetupInstructions() : (
+            !characters || !characterJsonStringForAi ? renderSetupInstructions() : (
                 aiResult ? renderResults() : renderUploader()
             )
         )}
