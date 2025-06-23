@@ -1,18 +1,17 @@
-
 [
   {
     "name": "기가채드 (Gigachad)",
-    "description": "상남자 중의 상남자. 모든 밈의 알파이자 오메가입니다.",
-    "imageDataUri": "/character_images/gigachad.png"
+    "description": "인터넷 밈으로, 매우 남성적인 외모와 자신감 넘치는 태도를 가진 인물을 상징합니다.",
+    "imageDataUri": "https://placehold.co/400x400.png"
   },
   {
     "name": "스키비디 토일렛 (Skibidi Toilet)",
-    "description": "한번 들으면 멈출 수 없는 중독성 있는 노래의 주인공. 예측불가능한 매력을 가지고 있습니다.",
-    "imageDataUri": "/character_images/skibidi_toilet.png"
+    "description": "변기에서 머리가 튀어나와 노래를 부르는 캐릭터가 등장하는 유튜브 시리즈입니다. 특이하고 중독성 있는 콘텐츠로 인기를 끌었습니다.",
+    "imageDataUri": "https://placehold.co/400x400.png"
   },
   {
     "name": "카피바라 (Capybara)",
-    "description": "세상의 모든 동물과 친구가 되는 궁극의 친화력. 당신은 모든 사람들에게 편안함을 줍니다.",
-    "imageDataUri": "/character_images/capybara.png"
+    "description": "매우 온순하고 친화력이 좋은 동물로, 다른 동물들과 잘 어울리는 모습 때문에 '인싸 동물'로 불리며 밈이 되었습니다.",
+    "imageDataUri": "https://placehold.co/400x400.png"
   }
 ]
