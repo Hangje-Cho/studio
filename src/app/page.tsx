@@ -119,7 +119,7 @@ export default function Home() {
       </CardHeader>
       <CardContent>
         <p className="mb-4">
-          앱을 사용하려면 먼저 캐릭터 데이터를 설정해야 합니다. `public` 폴더에 `characters.json` 파일을 생성하고 아래와 같은 형식으로 캐릭터 정보를 추가해주세요. 이미지 경로는 `public` 폴더를 기준으로 합니다.
+          앱을 사용하려면 먼저 캐릭터 데이터를 설정해야 합니다. `public` 폴더에 `character_images` 폴더를 만들고 캐릭터 이미지들을 넣어주세요. 그 다음, `public` 폴더에 `characters.json` 파일을 생성하고 아래와 같은 형식으로 캐릭터 정보를 추가해주세요.
         </p>
         <pre className="p-4 rounded-md bg-muted text-muted-foreground overflow-x-auto text-sm">
           <code>
@@ -127,12 +127,12 @@ export default function Home() {
   {
     "name": "캐릭터 이름",
     "description": "캐릭터에 대한 간단한 설명",
-    "imageDataUri": "/characters/image1.png"
+    "imageDataUri": "/character_images/image1.png"
   },
   {
     "name": "다른 캐릭터 이름",
     "description": "이 캐릭터에 대한 또 다른 설명",
-    "imageDataUri": "/characters/image2.png"
+    "imageDataUri": "/character_images/image2.png"
   }
 ]`}
           </code>
