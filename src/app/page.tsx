@@ -10,17 +10,19 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { getCharacterDataWithImages } from './actions';
 
 type Character = {
   name: string;
   description: string;
-  imageDataUri: string;
+  imageDataUriForAi: string; // base64 for AI
+  originalImageDataUri: string; // path for <Image> component
 };
 
 type DisplayResult = {
   resemblanceExplanation: string;
   characterName: string;
-  characterImageDataUri: string;
+  characterImageDataUri: string; // path for <Image> component
 };
 
 const Loader = () => (
@@ -33,7 +35,6 @@ const Loader = () => (
 
 export default function Home() {
   const [characters, setCharacters] = useState<Character[] | null>(null);
-  const [characterJsonStringForAi, setCharacterJsonStringForAi] = useState<string>('');
   const [userPhoto, setUserPhoto] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [aiResult, setAiResult] = useState<DisplayResult | null>(null);
@@ -46,38 +47,8 @@ export default function Home() {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch('/characters.json');
-        if (!response.ok) {
-          throw new Error('`public/characters.json` 파일을 찾을 수 없습니다. 파일이 해당 위치에 있는지 확인해주세요.');
-        }
-        const characterMetadata: Character[] = await response.json();
-        setCharacters(characterMetadata);
-
-        const charactersForAi = await Promise.all(
-          characterMetadata.map(async (char) => {
-            try {
-              const imageResponse = await fetch(char.imageDataUri);
-              if (!imageResponse.ok) {
-                throw new Error(`'${char.name}' 캐릭터의 이미지 ('${char.imageDataUri}')를 불러오는 데 실패했습니다. 파일이 존재하는지 확인해주세요.`);
-              }
-              const blob = await imageResponse.blob();
-              const reader = new FileReader();
-              const dataUri = await new Promise<string>((resolve, reject) => {
-                reader.onloadend = () => resolve(reader.result as string);
-                reader.onerror = reject;
-                reader.readAsDataURL(blob);
-              });
-              return { ...char, imageDataUri: dataUri };
-            } catch (imageError) {
-              const specificError = new Error(`'${char.name}' 캐릭터의 이미지 ('${char.imageDataUri}')를 불러오는 데 실패했습니다. 파일이 존재하는지 확인해주세요.`);
-              specificError.cause = imageError;
-              throw specificError;
-            }
-          })
-        );
-        
-        setCharacterJsonStringForAi(JSON.stringify(charactersForAi));
-
+        const characterData = await getCharacterDataWithImages();
+        setCharacters(characterData);
       } catch (e: any) {
         console.error(e);
         setError(e.message);
@@ -101,19 +72,27 @@ export default function Home() {
   };
 
   const handleCompare = async () => {
-    if (!userPhoto || !characterJsonStringForAi) {
+    if (!userPhoto || !characters) {
       setError("사진을 업로드하고 캐릭터 데이터가 준비되어야 합니다.");
       return;
     }
     setIsLoading(true);
     setError(null);
+
+    const charactersForAi = characters.map(({ name, description, imageDataUriForAi }) => ({
+      name,
+      description,
+      imageDataUri: imageDataUriForAi,
+    }));
+    const characterJsonStringForAi = JSON.stringify(charactersForAi);
+
     try {
       const comparisonResult: ComparePhotoToCharactersOutput = await comparePhotoToCharacters({
         photoDataUri: userPhoto,
         characterJsonData: characterJsonStringForAi,
       });
 
-      const matchedCharacter = characters?.find(c => c.name === comparisonResult.characterName);
+      const matchedCharacter = characters.find(c => c.name === comparisonResult.characterName);
 
       if (!matchedCharacter) {
         throw new Error(`AI가 반환한 캐릭터("${comparisonResult.characterName}")를 로컬 데이터에서 찾을 수 없습니다.`);
@@ -122,7 +101,7 @@ export default function Home() {
       const resultForDisplay: DisplayResult = {
         resemblanceExplanation: comparisonResult.resemblanceExplanation,
         characterName: matchedCharacter.name,
-        characterImageDataUri: matchedCharacter.imageDataUri,
+        characterImageDataUri: matchedCharacter.originalImageDataUri,
       };
 
       setAiResult(resultForDisplay);
@@ -170,10 +149,10 @@ export default function Home() {
           </AlertDescription>
         </Alert>
         <p className="mt-4">
-          오류 메시지를 확인하고 문제를 해결해주세요. 보통 `public` 폴더에 `characters.json` 파일이나, 이 파일에 지정된 캐릭터 이미지가 없을 때 발생합니다.
+          오류 메시지를 확인하고 문제를 해결해주세요. 보통 `public` 폴더에 `characters.json` 파일이 없거나, 그 파일에 지정된 캐릭터 이미지가 `public` 폴더 내에 없을 때 발생합니다.
         </p>
         <p className="mt-2">
-            `public/characters.json` 파일이 아래와 같은 형식인지, `imageDataUri`에 지정된 이미지 파일이 `public` 폴더 내에 실제로 존재하는지 확인해주세요.
+            `public/characters.json` 파일이 아래와 같은 형식인지, `imageDataUri`에 지정된 이미지 파일 경로가 올바른지 확인해주세요.
         </p>
         <pre className="mt-4 p-4 rounded-md bg-muted text-muted-foreground overflow-x-auto text-sm">
           <code>
@@ -299,7 +278,7 @@ export default function Home() {
 
       <main className="flex-1 flex items-center justify-center container mx-auto px-4 py-8">
         {isLoading ? <Loader /> : (
-            !characters || !characterJsonStringForAi ? renderSetupInstructions() : (
+            !characters ? renderSetupInstructions() : (
                 aiResult ? renderResults() : renderUploader()
             )
         )}

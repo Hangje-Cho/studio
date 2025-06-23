@@ -1,17 +1,18 @@
+
 [
   {
     "name": "기가채드 (Gigachad)",
-    "description": "인터넷 밈으로, 매우 남성적인 외모와 자신감 넘치는 태도를 가진 인물을 상징합니다.",
-    "imageDataUri": "https://placehold.co/400x400.png"
+    "description": "인터넷 밈으로, 극도로 남성적인 외모와 신체를 가진 남성을 상징합니다. 자신감 넘치고 당당한 태도가 특징입니다.",
+    "imageDataUri": "/character_images/gigachad.png"
   },
   {
     "name": "스키비디 토일렛 (Skibidi Toilet)",
-    "description": "변기에서 머리가 튀어나와 노래를 부르는 캐릭터가 등장하는 유튜브 시리즈입니다. 특이하고 중독성 있는 콘텐츠로 인기를 끌었습니다.",
-    "imageDataUri": "https://placehold.co/400x400.png"
+    "description": "변기에서 사람의 머리가 튀어나와 노래를 부르는 기괴하고 중독성 있는 영상 시리즈의 주인공입니다. 예측할 수 없는 행동으로 혼란을 일으킵니다.",
+    "imageDataUri": "/character_images/skibidi_toilet.png"
   },
   {
     "name": "카피바라 (Capybara)",
-    "description": "매우 온순하고 친화력이 좋은 동물로, 다른 동물들과 잘 어울리는 모습 때문에 '인싸 동물'로 불리며 밈이 되었습니다.",
-    "imageDataUri": "https://placehold.co/400x400.png"
+    "description": "모든 동물과 친하게 지내는 온화하고 사교적인 성격의 동물입니다. '세상의 모든 갈등을 해결하는 자'로 불리며 평화와 안정의 상징이 되었습니다.",
+    "imageDataUri": "/character_images/capybara.png"
   }
 ]
