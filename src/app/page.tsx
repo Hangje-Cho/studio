@@ -107,14 +107,25 @@ export default function Home() {
         characterJsonData: characterJsonStringForAi,
       });
 
-      const matchedCharacter = characters.find(c => c.name === comparisonResult.characterName);
+      if (!comparisonResult.matches || comparisonResult.matches.length === 0) {
+        throw new Error("AI가 캐릭터 분석 결과를 반환하지 않았습니다.");
+      }
+
+      // --- NEW LOGIC TO ADD VARIETY ---
+      // Get the top 3 results, or fewer if there aren't that many.
+      const topMatches = comparisonResult.matches.slice(0, 3);
+      // Randomly select one from the top matches.
+      const selectedMatch = topMatches[Math.floor(Math.random() * topMatches.length)];
+      // --- END OF NEW LOGIC ---
+
+      const matchedCharacter = characters.find(c => c.name === selectedMatch.characterName);
 
       if (!matchedCharacter) {
-        throw new Error(`AI가 반환한 캐릭터("${comparisonResult.characterName}")를 로컬 데이터에서 찾을 수 없습니다.`);
+        throw new Error(`AI가 반환한 캐릭터("${selectedMatch.characterName}")를 로컬 데이터에서 찾을 수 없습니다.`);
       }
 
       const resultForDisplay: DisplayResult = {
-        resemblanceExplanation: comparisonResult.resemblanceExplanation,
+        resemblanceExplanation: selectedMatch.resemblanceExplanation,
         characterName: matchedCharacter.name,
         characterImageDataUri: matchedCharacter.originalImageDataUri,
       };
@@ -122,7 +133,7 @@ export default function Home() {
       setAiResult(resultForDisplay);
 
       const infoResult = await searchCharacterInfo({
-        characterName: comparisonResult.characterName,
+        characterName: selectedMatch.characterName,
       });
       setCharacterInfo(infoResult);
 
