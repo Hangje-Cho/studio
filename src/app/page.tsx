@@ -109,7 +109,7 @@ export default function Home() {
       const topMatches = comparisonResult.matches.slice(0, 5);
       const selectedMatch = topMatches[Math.floor(Math.random() * topMatches.length)];
 
-      const matchedCharacter = characters.find(c => c.name === selectedMatch.characterName);
+      const matchedCharacter = characterBatch.find(c => c.name === selectedMatch.characterName);
 
       if (!matchedCharacter) {
         throw new Error(`AI가 반환한 캐릭터("${selectedMatch.characterName}")를 로컬 데이터에서 찾을 수 없습니다.`);
