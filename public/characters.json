@@ -2,22 +2,32 @@
 [
   {
     "name": "기가채드 (Gigachad)",
-    "description": "압도적인 남성미와 강인한 턱선을 자랑하는 인터넷 밈 캐릭터입니다.",
+    "description": "압도적인 턱선과 근육질 몸매를 가진 전설적인 상남자 밈의 주인공. 그의 존재감은 타의 추종을 불허합니다.",
     "imageDataUri": "/character_images/1.png"
   },
   {
     "name": "스키비디 토일렛 (Skibidi Toilet)",
-    "description": "변기에서 튀어나와 노래를 부르는 기괴하고 중독성 있는 캐릭터입니다.",
+    "description": "변기에서 튀어나와 기괴한 노래를 부르는 캐릭터. 중독성 있는 멜로디와 예측 불가능한 행동으로 컬트적인 인기를 끌고 있습니다.",
     "imageDataUri": "/character_images/2.png"
   },
   {
     "name": "카피바라 (Capybara)",
-    "description": "모든 동물과 평화롭게 지내는 온화하고 친화력 높은 캐릭터입니다.",
+    "description": "세상 모든 동물과 친하게 지내는 온화하고 평화로운 성격의 소유자. '친화력 끝판왕'으로 불립니다.",
     "imageDataUri": "/character_images/3.png"
   },
   {
-    "name": "알 수 없는 캐릭터",
-    "description": "이미지 파일이 누락된 캐릭터입니다.",
+    "name": "페페 더 프로그 (Pepe the Frog)",
+    "description": "다양한 감정을 표현하는 개구리 캐릭터. 슬픔, 기쁨, 분노 등 인터넷의 모든 감정을 대변합니다.",
     "imageDataUri": "/character_images/4.png"
+  },
+  {
+    "name": "워jak (Wojak)",
+    "description": "단순한 선으로 그려진 얼굴로, 주로 슬픔, 고독, 내적 갈등을 표현하는 데 사용되는 밈 캐릭터입니다.",
+    "imageDataUri": "/character_images/5.png"
+  },
+  {
+    "name": "트롤페이스 (Trollface)",
+    "description": "짓궂은 미소를 짓고 있는 얼굴. 인터넷 초창기부터 '트롤링' 문화를 상징하는 대표적인 캐릭터입니다.",
+    "imageDataUri": "/character_images/6.png"
   }
 ]
