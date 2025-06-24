@@ -15,7 +15,7 @@ import { characters, Character } from '@/lib/characters';
 type DisplayResult = {
   resemblanceExplanation: string;
   characterName: string;
-  characterImageDataUri: string; // path for <Image> component
+  characterImageDataUri: string;
 };
 
 const Loader = () => (
@@ -55,36 +55,28 @@ export default function Home() {
       return;
     }
     setIsLoading(true);
+    setAiResult(null);
+    setCharacterInfo(null);
 
     try {
-      // Shuffle the characters array and pick a random subset to ensure result diversity.
       const shuffledCharacters = [...characters].sort(() => 0.5 - Math.random());
       const characterBatch = shuffledCharacters.slice(0, 8);
 
       const charactersForAiPromises = characterBatch.map(async (c) => {
         try {
-          // Fetch the image from the public path
           const response = await fetch(c.imageDataUri);
           if (!response.ok) {
-            // If fetching fails, log it but don't stop the whole process
             console.error(`Failed to fetch image for ${c.name}: ${response.statusText}`);
             return null;
           }
           const blob = await response.blob();
-          
-          // Convert blob to data URI
-          const reader = new FileReader();
           const dataUri = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
             reader.onloadend = () => resolve(reader.result as string);
             reader.onerror = reject;
             reader.readAsDataURL(blob);
           });
-          
-          return {
-            name: c.name,
-            description: c.description,
-            imageDataUri: dataUri,
-          };
+          return { name: c.name, description: c.description, imageDataUri: dataUri };
         } catch (error) {
           console.error(`Error processing image for ${c.name}:`, error);
           return null;
@@ -102,29 +94,31 @@ export default function Home() {
         characterData: charactersForAi as any,
       });
 
-      if (!comparisonResult.matches || comparisonResult.matches.length === 0) {
-        throw new Error("AI가 캐릭터 분석 결과를 반환하지 않았습니다.");
+      if (!comparisonResult.results || comparisonResult.results.length !== characterBatch.length) {
+        throw new Error("AI 분석 결과가 올바르지 않습니다. AI가 반환한 결과의 개수가 요청한 캐릭터의 개수와 다릅니다.");
       }
 
-      const topMatches = comparisonResult.matches.slice(0, 5);
+      const combinedResults = characterBatch.map((character, index) => ({
+        ...character,
+        resemblanceExplanation: comparisonResult.results[index].resemblanceExplanation,
+        score: comparisonResult.results[index].resemblanceScore,
+      }));
+
+      combinedResults.sort((a, b) => b.score - a.score);
+
+      const topMatches = combinedResults.slice(0, 5);
       const selectedMatch = topMatches[Math.floor(Math.random() * topMatches.length)];
-
-      const matchedCharacter = characterBatch.find(c => c.name === selectedMatch.characterName);
-
-      if (!matchedCharacter) {
-        throw new Error(`AI가 반환한 캐릭터("${selectedMatch.characterName}")를 로컬 데이터에서 찾을 수 없습니다.`);
-      }
 
       const resultForDisplay: DisplayResult = {
         resemblanceExplanation: selectedMatch.resemblanceExplanation,
-        characterName: matchedCharacter.name,
-        characterImageDataUri: matchedCharacter.imageDataUri,
+        characterName: selectedMatch.name,
+        characterImageDataUri: selectedMatch.imageDataUri,
       };
 
       setAiResult(resultForDisplay);
 
       const infoResult = await searchCharacterInfo({
-        characterName: selectedMatch.characterName,
+        characterName: selectedMatch.name,
       });
       setCharacterInfo(infoResult);
 

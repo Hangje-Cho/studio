@@ -13,42 +13,42 @@ export type Character = {
 export const characters: Character[] = [
   {
     name: '기가채드',
-    description: '완벽한 턱선, 넘치는 자신감. 당신이 바로 인터넷 밈의 제왕!',
+    description: '완벽한 턱선과 자신감, 당신은 걷는 조각상!',
     imageDataUri: '/character_images/1.png',
   },
   {
     name: '스키비디 토일렛',
-    description: '변기에서 불쑥! 중독성 강한 멜로디의 주인공.',
+    description: '변기에서 불쑥! 당신의 등장은 언제나 서프라이즈.',
     imageDataUri: '/character_images/2.png',
   },
   {
-    name: '퉁 퉁 퉁 퉁 퉁 퉁 퉁 퉁 퉁 사후르',
-    description: '리드미컬한 비트와 함께 등장하는 미스터리한 인물. 멈출 수 없는 중독성.',
+    name: '사후르 댄스',
+    description: '알 수 없는 춤사위, 당신은 멈출 수 없는 흥부자.',
     imageDataUri: '/character_images/3.png',
   },
   {
     name: '엄준식',
-    description: '사람 이름이 어떻게 밈? 그 자체로 유행이 된 신비로운 존재.',
+    description: '이름 하나로 모든 것을 설명하는, 당신은 살아있는 전설.',
     imageDataUri: '/character_images/4.png',
   },
   {
     name: '개죽이',
-    description: '대나무에 매달린 전설의 강아지. 시대를 풍미한 K-밈의 시조새.',
+    description: '세상만사 태평한 표정, 당신은 진정한 힐링의 아이콘.',
     imageDataUri: '/character_images/5.png',
   },
   {
-    name: '브르르 브르르 파타핌',
-    description: '역동적인 포즈와 익살스러운 표정, 코믹 밈의 대명사.',
+    name: '파타핌 댄스',
+    description: '역동적인 몸짓, 당신의 유쾌함에 모두가 웃음 폭발!',
     imageDataUri: '/character_images/6.png',
   },
   {
     name: '관짝소년단',
-    description: '네 명의 댄서가 관을 들고 추는 유쾌하고도 엄숙한 춤. 반전 매력의 소유자.',
+    description: '슬픔도 춤으로 승화시키는, 당신은 진정한 긍정의 아이콘.',
     imageDataUri: '/character_images/7.png',
   },
   {
     name: '무야호',
-    description: '산 정상에서 외치는 정겨운 할아버지의 함성. 그 시절 순수함과 유쾌함의 상징.',
+    description: '"무야호~!"를 외치던 그 시절의 순수함, 당신은 유쾌한 자유로운 영혼.',
     imageDataUri: '/character_images/8.png',
   },
 ];

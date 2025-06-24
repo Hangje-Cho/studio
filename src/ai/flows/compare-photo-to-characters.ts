@@ -27,18 +27,18 @@ const ComparePhotoToCharactersInputSchema = z.object({
 export type ComparePhotoToCharactersInput = z.infer<typeof ComparePhotoToCharactersInputSchema>;
 
 const CharacterMatchSchema = z.object({
-  characterName: z.string().describe('캐릭터의 이름.'),
   resemblanceExplanation: z
     .string()
     .describe(
       '사용자가 해당 캐릭터와 닮은 이유에 대한 유머러스하고 재치있는 설명.'
     ),
+  resemblanceScore: z.number().describe('사용자와 캐릭터의 시각적 유사도 점수 (0에서 100 사이). 높을수록 더 닮았음을 의미합니다.')
 });
 
 const ComparePhotoToCharactersOutputSchema = z.object({
-  matches: z
+  results: z
     .array(CharacterMatchSchema)
-    .describe('분석된 모든 캐릭터의 목록. 가장 닮은 순서대로 정렬되어야 합니다.'),
+    .describe('입력으로 제공된 각 캐릭터에 대한 분석 결과. 입력된 캐릭터와 동일한 순서여야 합니다.'),
 });
 export type ComparePhotoToCharactersOutput = z.infer<typeof ComparePhotoToCharactersOutputSchema>;
 
@@ -50,29 +50,25 @@ const prompt = ai.definePrompt({
   name: 'comparePhotoToCharactersPrompt',
   input: {schema: ComparePhotoToCharactersInputSchema},
   output: {schema: ComparePhotoToCharactersOutputSchema},
-  prompt: `당신은 사용자의 사진과 주어진 캐릭터 이미지를 **시각적으로 비교**하여 가장 닮은 캐릭터를 찾아내는 전문 AI입니다. 분석은 유머를 담아 재치있게 표현해주세요.
+  prompt: `당신은 사용자의 사진과 주어진 캐릭터 목록을 비교 분석하는 AI 전문가입니다.
 
-  **지시사항:**
-  1.  **시각적 분석 우선:** 사용자의 사진과 각 캐릭터의 이미지를 면밀히 비교하여, 얼굴 형태, 표정, 헤어스타일, 옷차림 등 **시각적 공통점**을 최우선으로 찾으세요.
-  2.  **설명은 보조 수단:** 시각적 유사성을 찾은 후에만, 캐릭터 설명을 활용하여 닮은 이유를 더 재미있게 꾸며주세요. **시각적으로 전혀 닮지 않았다면 설명을 기반으로 억지로 연결하지 마세요.**
-  3.  **전체 캐릭터 분석 및 순위 부여:** 제공된 모든 캐릭터에 대해 개별 분석을 제공하고, **시각적으로 가장 닮은 순서대로** 순위를 매겨주세요.
-  4.  **창의적인 결과:** 분석 결과를 바탕으로, 각 캐릭터와 닮은 이유를 창의적이고 유머러스한 한국어로 작성해주세요.
-  
-  사용자의 사진:
-  {{media url=photoDataUri}}
-  
-  캐릭터 목록 (이미지를 중심으로 분석하세요):
-  {{#each characterData}}
-  - 이름: {{this.name}}
-    이미지: {{media url=this.imageDataUri}}
-    설명: {{this.description}}
-  {{/each}}
-  
-  
-  **최종 출력:**
-  분석이 끝나면, 사용자와 가장 닮았다고 생각하는 순서대로 캐릭터 목록을 정렬하여 결과를 반환해야 합니다. 가장 닮은 캐릭터가 목록의 첫 번째에 와야 합니다.
-  **매우 중요: \`characterName\` 필드에는 반드시 위에 제공된 '이름'을 그대로, 정확하게 사용해야 합니다. 절대 다른 이름을 생성하거나 추측하지 마세요.**
-  `,
+**지시사항:**
+1.  **순서 엄수:** 제공된 '캐릭터 목록'의 순서대로 각 캐릭터를 분석하고, 결과를 **반드시 동일한 순서**로 반환해야 합니다. 순서를 절대 바꾸면 안 됩니다.
+2.  **시각적 분석:** 사용자의 사진과 각 캐릭터의 이미지를 면밀히 비교하여, 얼굴 형태, 표정, 헤어스타일 등 시각적 공통점을 중심으로 분석하세요.
+3.  **점수 부여:** 각 캐릭터와의 시각적 유사도를 0점에서 100점 사이의 점수로 평가하여 'resemblanceScore'에 할당하세요. 점수가 높을수록 더 닮은 것입니다.
+4.  **재치있는 설명:** 분석 결과를 바탕으로, 각 캐릭터와 닮은 이유를 창의적이고 유머러스한 한국어로 'resemblanceExplanation'에 작성해주세요.
+5.  **설명은 보조 수단:** 시각적 유사성이 낮다면 낮은 점수를 부여하세요. 캐릭터 설명을 기반으로 억지로 닮았다고 설명하지 마세요.
+
+사용자의 사진:
+{{media url=photoDataUri}}
+
+캐릭터 목록 (이 순서대로 분석하고 결과를 반환하세요):
+{{#each characterData}}
+- 이름: {{this.name}}
+  이미지: {{media url=this.imageDataUri}}
+  설명: {{this.description}}
+{{/each}}
+`,
   config: {
     temperature: 1,
     safetySettings: [
