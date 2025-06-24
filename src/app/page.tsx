@@ -61,6 +61,7 @@ export default function Home() {
     try {
       const shuffledCharacters = [...characters].sort(() => 0.5 - Math.random());
       const characterBatch = shuffledCharacters.slice(0, 8);
+      const characterBatchMap = new Map(characterBatch.map(c => [c.name, c]));
 
       const charactersForAiPromises = characterBatch.map(async (c) => {
         try {
@@ -94,16 +95,28 @@ export default function Home() {
         characterData: charactersForAi as any,
       });
 
-      if (!comparisonResult.results || comparisonResult.results.length !== characterBatch.length) {
-        throw new Error("AI 분석 결과가 올바르지 않습니다. AI가 반환한 결과의 개수가 요청한 캐릭터의 개수와 다릅니다.");
+      if (!comparisonResult.results || comparisonResult.results.length === 0) {
+        throw new Error("AI 분석 결과를 받지 못했습니다.");
       }
 
-      const combinedResults = characterBatch.map((character, index) => ({
-        ...character,
-        resemblanceExplanation: comparisonResult.results[index].resemblanceExplanation,
-        score: comparisonResult.results[index].resemblanceScore,
-      }));
+      const combinedResults = comparisonResult.results.map((result) => {
+        const originalCharacter = characterBatchMap.get(result.characterName);
+        if (!originalCharacter) {
+          console.warn(`AI가 목록에 없는 캐릭터 이름을 반환했습니다: ${result.characterName}`);
+          return null;
+        }
+        return {
+          ...originalCharacter,
+          resemblanceExplanation: result.resemblanceExplanation,
+          score: result.resemblanceScore,
+        };
+      }).filter((r): r is NonNullable<typeof r> => r !== null);
 
+
+      if (combinedResults.length === 0) {
+        throw new Error("AI 분석 결과와 캐릭터 정보를 매칭할 수 없습니다. AI가 잘못된 이름 형식을 반환했을 수 있습니다.");
+      }
+      
       combinedResults.sort((a, b) => b.score - a.score);
 
       const topMatches = combinedResults.slice(0, 5);

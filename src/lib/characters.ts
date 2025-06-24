@@ -22,7 +22,7 @@ export const characters: Character[] = [
     imageDataUri: '/character_images/2.png',
   },
   {
-    name: '사후르 댄스',
+    name: '퉁 퉁 퉁 퉁 퉁 퉁 퉁 퉁 퉁 사후르',
     description: '알 수 없는 춤사위, 당신은 멈출 수 없는 흥부자.',
     imageDataUri: '/character_images/3.png',
   },
@@ -37,7 +37,7 @@ export const characters: Character[] = [
     imageDataUri: '/character_images/5.png',
   },
   {
-    name: '파타핌 댄스',
+    name: '브르르 브르르 파타핌',
     description: '역동적인 몸짓, 당신의 유쾌함에 모두가 웃음 폭발!',
     imageDataUri: '/character_images/6.png',
   },
