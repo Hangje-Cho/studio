@@ -14,15 +14,15 @@ const ComparePhotoToCharactersInputSchema = z.object({
   photoDataUri: z
     .string()
     .describe(
-      "A photo of the user, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
+      "사용자의 사진. MIME 타입과 Base64 인코딩을 포함하는 데이터 URI 형식이어야 합니다. (예: 'data:<mimetype>;base64,<encoded_data>')"
     ),
-  characterJsonData: z.string().describe('A JSON string containing an array of character objects, each with a name and description.'),
+  characterJsonData: z.string().describe('캐릭터 객체의 배열을 담고 있는 JSON 문자열. 각 객체는 이름과 설명을 포함합니다.'),
 });
 export type ComparePhotoToCharactersInput = z.infer<typeof ComparePhotoToCharactersInputSchema>;
 
 const ComparePhotoToCharactersOutputSchema = z.object({
-  resemblanceExplanation: z.string().describe('A humorous explanation of why the user resembles the chosen character.'),
-  characterName: z.string().describe('The name of the character the user resembles most.'),
+  resemblanceExplanation: z.string().describe('사용자가 선택된 캐릭터와 닮은 이유에 대한 유머러스하고 재치있는 설명.'),
+  characterName: z.string().describe('사용자가 가장 닮은 캐릭터의 이름.'),
 });
 export type ComparePhotoToCharactersOutput = z.infer<typeof ComparePhotoToCharactersOutputSchema>;
 
@@ -34,16 +34,17 @@ const prompt = ai.definePrompt({
   name: 'comparePhotoToCharactersPrompt',
   input: {schema: ComparePhotoToCharactersInputSchema},
   output: {schema: ComparePhotoToCharactersOutputSchema},
-  prompt: `You are an AI that compares a user's photo to a set of Italian Brainrot characters and provides a humorous explanation of the similarities.
+  prompt: `당신은 사용자의 사진을 보고, 주어진 '이탈리안 브레인롯' 캐릭터 목록과 비교하여 가장 닮은 캐릭터를 찾아주는 유머러스한 AI입니다. 재치와 유머 감각을 뽐내주세요!
 
-  Here is the user's photo:
+  사용자의 사진:
   {{media url=photoDataUri}}
 
-  Here are the characters (name and description only):
+  캐릭터 목록 (이름과 설명):
   {{characterJsonData}}
 
-  Based on the user's photo and the character descriptions, determine which character the user most resembles. Look for visual cues in the photo that match the character descriptions. Provide a funny explanation of the similarities. Only return one most similar character.
-  Your response must include the name of the character from the provided data.
+  사용자의 사진과 캐릭터 설명을 꼼꼼히 비교해서, 어떤 캐릭터와 가장 닮았는지 찾아내세요. 사진에서 보이는 시각적인 특징과 캐릭터 설명의 연관성을 찾아, 아주 재미있고 재치있는 설명을 한국어로 작성해주세요. 반드시 한 명의 가장 닮은 캐릭터만 골라야 합니다.
+  당신의 답변에는 반드시 주어진 데이터에 있는 캐릭터의 이름이 포함되어야 합니다.
+  예시: "당신의 굳건한 턱선과 강렬한 눈빛은 전설적인 상남자 '기가채드'를 떠올리게 하는군요! 아마 당신이 헬스장에 등장하면 모두가 운동을 멈추고 당신을 쳐다볼 거예요!"
   `,
   config: {
     safetySettings: [
