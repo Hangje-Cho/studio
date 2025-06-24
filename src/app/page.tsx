@@ -102,7 +102,7 @@ export default function Home() {
         throw new Error("AI가 캐릭터 분석 결과를 반환하지 않았습니다.");
       }
 
-      const topMatches = comparisonResult.matches.slice(0, 3);
+      const topMatches = comparisonResult.matches.slice(0, 5);
       const selectedMatch = topMatches[Math.floor(Math.random() * topMatches.length)];
 
       const matchedCharacter = characters.find(c => c.name === selectedMatch.characterName);
