@@ -1,25 +1,16 @@
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import Image from 'next/image';
-import { Brain, UploadCloud, Clapperboard, Sparkles, RotateCw, User, Wand2, AlertTriangle } from 'lucide-react';
+import { Brain, UploadCloud, Clapperboard, Sparkles, RotateCw, User, Wand2 } from 'lucide-react';
 import { comparePhotoToCharacters, ComparePhotoToCharactersOutput } from '@/ai/flows/compare-photo-to-characters';
 import { searchCharacterInfo, SearchCharacterInfoOutput } from '@/ai/flows/search-character-info';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { getCharacterDataWithImages } from './actions';
 import { useToast } from '@/hooks/use-toast';
-
-type Character = {
-  name: string;
-  description: string;
-  imageDataUriForAi: string; // base64 for AI
-  originalImageDataUri: string; // path for <Image> component
-  imageError: boolean;
-};
+import { characters, Character } from '@/lib/characters';
 
 type DisplayResult = {
   resemblanceExplanation: string;
@@ -36,32 +27,12 @@ const Loader = () => (
 );
 
 export default function Home() {
-  const [characters, setCharacters] = useState<Character[] | null>(null);
   const [userPhoto, setUserPhoto] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [aiResult, setAiResult] = useState<DisplayResult | null>(null);
   const [characterInfo, setCharacterInfo] = useState<SearchCharacterInfoOutput | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
-
-  useEffect(() => {
-    async function loadCharacterData() {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const characterData = await getCharacterDataWithImages();
-        setCharacters(characterData);
-      } catch (e: any) {
-        console.error(e);
-        setError(e.message);
-        setCharacters(null);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    loadCharacterData();
-  }, []);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -75,48 +46,34 @@ export default function Home() {
   };
 
   const handleCompare = async () => {
-    if (!userPhoto || !characters) {
+    if (!userPhoto) {
       toast({
           variant: "destructive",
           title: "오류",
-          description: "사진을 업로드하고 캐릭터 데이터가 준비되어야 합니다.",
+          description: "사진을 먼저 업로드해주세요.",
       });
       return;
     }
     setIsLoading(true);
-    setError(null);
 
-    const charactersForAi = characters
-      .filter(c => !c.imageError)
-      .map(({ name, description }) => ({
-        name,
-        description,
-      }));
-
-    if (charactersForAi.length === 0) {
-        setError("AI와 비교할 수 있는 캐릭터 이미지가 하나도 없습니다. `public/character_images` 폴더에 이미지를 추가하고 `public/characters.json` 파일의 경로가 올바른지 확인해주세요.");
-        setIsLoading(false);
-        return;
-    }
-
-    const characterJsonStringForAi = JSON.stringify(charactersForAi);
+    const charactersForAi = characters.map(c => ({
+        name: c.name,
+        description: c.description,
+        imageUrl: new URL(c.imageDataUri, window.location.origin).href,
+    }));
 
     try {
       const comparisonResult: ComparePhotoToCharactersOutput = await comparePhotoToCharacters({
         photoDataUri: userPhoto,
-        characterJsonData: characterJsonStringForAi,
+        characterData: charactersForAi,
       });
 
       if (!comparisonResult.matches || comparisonResult.matches.length === 0) {
         throw new Error("AI가 캐릭터 분석 결과를 반환하지 않았습니다.");
       }
 
-      // --- NEW LOGIC TO ADD VARIETY ---
-      // Get the top 3 results, or fewer if there aren't that many.
       const topMatches = comparisonResult.matches.slice(0, 3);
-      // Randomly select one from the top matches.
       const selectedMatch = topMatches[Math.floor(Math.random() * topMatches.length)];
-      // --- END OF NEW LOGIC ---
 
       const matchedCharacter = characters.find(c => c.name === selectedMatch.characterName);
 
@@ -127,7 +84,7 @@ export default function Home() {
       const resultForDisplay: DisplayResult = {
         resemblanceExplanation: selectedMatch.resemblanceExplanation,
         characterName: matchedCharacter.name,
-        characterImageDataUri: matchedCharacter.originalImageDataUri,
+        characterImageDataUri: matchedCharacter.imageDataUri,
       };
 
       setAiResult(resultForDisplay);
@@ -155,53 +112,10 @@ export default function Home() {
     setUserPhoto(null);
     setAiResult(null);
     setCharacterInfo(null);
-    setError(null);
     if(fileInputRef.current) {
         fileInputRef.current.value = "";
     }
   };
-  
-  const renderSetupInstructions = () => (
-    <Card className="w-full max-w-2xl mx-auto animate-fade-in">
-      <CardHeader>
-        <div className="flex items-center gap-3">
-            <AlertTriangle className="w-8 h-8 text-destructive"/>
-            <CardTitle className="font-headline">앱 설정이 필요합니다</CardTitle>
-        </div>
-        <CardDescription>앱을 시작하는 데 문제가 발생했습니다.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Alert variant="destructive">
-          <AlertTriangle className="h-4 w-4" />
-          <AlertTitle>오류 발생</AlertTitle>
-          <AlertDescription>
-            {error || '알 수 없는 오류가 발생했습니다.'}
-          </AlertDescription>
-        </Alert>
-        <p className="mt-4">
-          오류 메시지를 확인하고 문제를 해결해주세요. 보통 `public` 폴더에 `characters.json` 파일이 없거나, 그 파일에 지정된 캐릭터 이미지가 `public/character_images` 폴더 내에 없을 때 발생합니다.
-        </p>
-        <p className="mt-2">
-            `public/characters.json` 파일이 아래와 같은 형식인지, `imageDataUri`에 지정된 이미지 파일 경로가 올바른지 확인해주세요.
-        </p>
-        <pre className="mt-4 p-4 rounded-md bg-muted text-muted-foreground overflow-x-auto text-sm">
-          <code>
-{`[
-  {
-    "name": "캐릭터 이름",
-    "description": "캐릭터에 대한 간단한 설명",
-    "imageDataUri": "/character_images/image1.png"
-  },
-  ...
-]`}
-          </code>
-        </pre>
-      </CardContent>
-      <CardFooter>
-          <p className="text-xs text-muted-foreground">파일을 추가하거나 수정한 후 페이지를 새로고침 해주세요.</p>
-      </CardFooter>
-    </Card>
-  );
 
   const renderUploader = () => (
     <Card className="w-full max-w-md mx-auto animate-fade-in shadow-lg">
@@ -266,7 +180,18 @@ export default function Home() {
                 <div className="flex flex-col items-center gap-4">
                     <h3 className="font-headline text-xl">닮은 캐릭터</h3>
                     <div className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden shadow-lg border-4 border-white">
-                        <Image src={aiResult!.characterImageDataUri} alt={aiResult!.characterName} fill style={{ objectFit: 'cover' }} data-ai-hint="portrait character"/>
+                        <Image 
+                          src={aiResult!.characterImageDataUri} 
+                          alt={aiResult!.characterName} 
+                          fill 
+                          style={{ objectFit: 'cover' }} 
+                          data-ai-hint="portrait character"
+                          onError={() => {
+                            if (aiResult?.characterImageDataUri !== '/placeholder.svg') {
+                              setAiResult(prev => prev ? ({ ...prev, characterImageDataUri: '/placeholder.svg' }) : null);
+                            }
+                          }}
+                        />
                     </div>
                 </div>
             </div>
@@ -308,9 +233,7 @@ export default function Home() {
 
       <main className="flex-1 flex items-center justify-center container mx-auto px-4 py-8">
         {isLoading ? <Loader /> : (
-            !characters ? renderSetupInstructions() : (
-                aiResult ? renderResults() : renderUploader()
-            )
+            aiResult ? renderResults() : renderUploader()
         )}
       </main>
       

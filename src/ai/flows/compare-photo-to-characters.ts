@@ -10,13 +10,19 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
+const CharacterInputSchema = z.object({
+  name: z.string().describe('캐릭터의 이름.'),
+  description: z.string().describe('캐릭터에 대한 설명.'),
+  imageUrl: z.string().describe('캐릭터 이미지의 공개 URL.'),
+});
+
 const ComparePhotoToCharactersInputSchema = z.object({
   photoDataUri: z
     .string()
     .describe(
       "사용자의 사진. MIME 타입과 Base64 인코딩을 포함하는 데이터 URI 형식이어야 합니다. (예: 'data:<mimetype>;base64,<encoded_data>')"
     ),
-  characterJsonData: z.string().describe('캐릭터 객체의 배열을 담고 있는 JSON 문자열. 각 객체는 이름과 설명을 포함합니다.'),
+  characterData: z.array(CharacterInputSchema).describe('분석할 캐릭터 정보의 배열.'),
 });
 export type ComparePhotoToCharactersInput = z.infer<typeof ComparePhotoToCharactersInputSchema>;
 
@@ -51,11 +57,16 @@ const prompt = ai.definePrompt({
   사용자의 사진:
   {{media url=photoDataUri}}
 
-  캐릭터 목록 (이름과 설명):
-  {{characterJsonData}}
+  캐릭터 목록:
+  {{#each characterData}}
+  - 이름: {{this.name}}
+    설명: {{this.description}}
+    이미지: {{media url=this.imageUrl}}
+  {{/each}}
+
 
   **지시사항:**
-  1.  사용자의 사진과 **제공된 모든 캐릭터 설명**을 꼼꼼히 비교하세요.
+  1.  사용자의 사진과 **제공된 모든 캐릭터의 설명과 이미지**를 꼼꼼히 비교하세요.
   2.  **모든 캐릭터 각각에 대해**, 시각적 특징(얼굴 표정, 분위기 등)과 캐릭터 설명을 종합하여 닮은 이유를 창의적이고 재미있는 한국어로 작성해주세요.
   3.  분석이 끝나면, 사용자와 가장 닮았다고 생각하는 순서대로 캐릭터 목록을 정렬하여 결과를 반환해야 합니다. 가장 닮은 캐릭터가 목록의 첫 번째에 와야 합니다.
   4.  당신의 답변에는 반드시 주어진 데이터에 있는 캐릭터의 이름이 포함되어야 합니다. 재치와 유머 감각을 마음껏 뽐내주세요!
