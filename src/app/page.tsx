@@ -76,14 +76,14 @@ export default function Home() {
             reader.onerror = reject;
             reader.readAsDataURL(blob);
           });
-          return { name: c.name, description: c.description, imageDataUri: dataUri };
+          return { id: c.id, name: c.name, description: c.description, imageDataUri: dataUri };
         } catch (error) {
           console.error(`Error processing image for ${c.name}:`, error);
           return null;
         }
       });
       
-      const charactersForAi = (await Promise.all(charactersForAiPromises)).filter(Boolean) as { name: string; description: string; imageDataUri: string; }[];
+      const charactersForAi = (await Promise.all(charactersForAiPromises)).filter(Boolean) as { id: string, name: string; description: string; imageDataUri: string; }[];
 
       if (charactersForAi.length === 0) {
         throw new Error("캐릭터 이미지를 불러오지 못했습니다. 네트워크를 확인하거나 잠시 후 다시 시도해주세요.");
@@ -94,18 +94,28 @@ export default function Home() {
         characterData: charactersForAi,
       });
 
-      if (!comparisonResult.results || comparisonResult.results.length !== characterBatch.length) {
-        throw new Error("AI 분석 결과가 유효하지 않거나, 분석된 캐릭터 수가 요청과 다릅니다.");
+      if (!comparisonResult.results || comparisonResult.results.length === 0) {
+        throw new Error("AI가 분석 결과를 반환하지 않았습니다.");
       }
+      
+      const characterMap = new Map(charactersForAi.map(c => [c.id, c]));
 
-      const combinedResults = characterBatch.map((character, index) => {
-        const result = comparisonResult.results[index];
+      const combinedResults = comparisonResult.results.map(result => {
+        const character = characterMap.get(result.characterId);
+        if (!character) {
+          console.warn(`AI returned an unknown characterId: ${result.characterId}`);
+          return null;
+        }
         return {
           ...character,
           resemblanceExplanation: result.resemblanceExplanation,
           score: result.resemblanceScore,
         };
-      });
+      }).filter(Boolean) as (Character & { resemblanceExplanation: string; score: number })[];
+      
+      if (combinedResults.length === 0) {
+        throw new Error("AI 분석 결과와 캐릭터 정보를 매칭하는데 실패했습니다.");
+      }
       
       combinedResults.sort((a, b) => b.score - a.score);
 
