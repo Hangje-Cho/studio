@@ -12,12 +12,12 @@ export type Character = {
 
 export const characters: Character[] = [
   {
-    name: '기가채드 (Gigachad)',
+    name: '기가채드',
     description: '완벽한 턱선, 넘치는 자신감. 당신이 바로 인터넷 밈의 제왕!',
     imageDataUri: '/character_images/1.png',
   },
   {
-    name: '스키비디 토일렛 (Skibidi Toilet)',
+    name: '스키비디 토일렛',
     description: '변기에서 불쑥! 중독성 강한 멜로디의 주인공.',
     imageDataUri: '/character_images/2.png',
   },
@@ -27,27 +27,27 @@ export const characters: Character[] = [
     imageDataUri: '/character_images/3.png',
   },
   {
-    name: '엄준식 (Uhm Junsik)',
+    name: '엄준식',
     description: '사람 이름이 어떻게 밈? 그 자체로 유행이 된 신비로운 존재.',
     imageDataUri: '/character_images/4.png',
   },
   {
-    name: '개죽이 (Gaejooki)',
+    name: '개죽이',
     description: '대나무에 매달린 전설의 강아지. 시대를 풍미한 K-밈의 시조새.',
     imageDataUri: '/character_images/5.png',
   },
   {
-    name: '호무랑 (Homurang)',
+    name: '호무랑',
     description: '역동적인 포즈와 익살스러운 표정, 코믹 밈의 대명사.',
     imageDataUri: '/character_images/6.png',
   },
   {
-    name: '관짝소년단 (Coffin Dance)',
+    name: '관짝소년단',
     description: '네 명의 댄서가 관을 들고 추는 유쾌하고도 엄숙한 춤. 반전 매력의 소유자.',
     imageDataUri: '/character_images/7.png',
   },
   {
-    name: '무야호 (Muyaho)',
+    name: '무야호',
     description: '산 정상에서 외치는 정겨운 할아버지의 함성. 그 시절 순수함과 유쾌함의 상징.',
     imageDataUri: '/character_images/8.png',
   },
