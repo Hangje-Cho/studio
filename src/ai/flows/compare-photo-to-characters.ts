@@ -13,7 +13,7 @@ import {z} from 'genkit';
 const CharacterInputSchema = z.object({
   name: z.string().describe('캐릭터의 이름.'),
   description: z.string().describe('캐릭터에 대한 설명.'),
-  imageUrl: z.string().describe('캐릭터 이미지의 공개 URL.'),
+  imageDataUri: z.string().describe("캐릭터 이미지. MIME 타입과 Base64 인코딩을 포함하는 데이터 URI 형식이어야 합니다."),
 });
 
 const ComparePhotoToCharactersInputSchema = z.object({
@@ -61,7 +61,7 @@ const prompt = ai.definePrompt({
   {{#each characterData}}
   - 이름: {{this.name}}
     설명: {{this.description}}
-    이미지: {{media url=this.imageUrl}}
+    이미지: {{media url=this.imageDataUri}}
   {{/each}}
 
 

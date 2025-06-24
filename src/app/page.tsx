@@ -56,16 +56,46 @@ export default function Home() {
     }
     setIsLoading(true);
 
-    const charactersForAi = characters.map(c => ({
-        name: c.name,
-        description: c.description,
-        imageUrl: new URL(c.imageDataUri, window.location.origin).href,
-    }));
-
     try {
+      const charactersForAiPromises = characters.map(async (c) => {
+        try {
+          // Fetch the image from the public path
+          const response = await fetch(c.imageDataUri);
+          if (!response.ok) {
+            // If fetching fails, log it but don't stop the whole process
+            console.error(`Failed to fetch image for ${c.name}: ${response.statusText}`);
+            return null;
+          }
+          const blob = await response.blob();
+          
+          // Convert blob to data URI
+          const reader = new FileReader();
+          const dataUri = await new Promise<string>((resolve, reject) => {
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+          });
+          
+          return {
+            name: c.name,
+            description: c.description,
+            imageDataUri: dataUri,
+          };
+        } catch (error) {
+          console.error(`Error processing image for ${c.name}:`, error);
+          return null;
+        }
+      });
+      
+      const charactersForAi = (await Promise.all(charactersForAiPromises)).filter(Boolean);
+
+      if (charactersForAi.length === 0) {
+        throw new Error("캐릭터 이미지를 불러오지 못했습니다. 네트워크를 확인하거나 잠시 후 다시 시도해주세요.");
+      }
+
       const comparisonResult: ComparePhotoToCharactersOutput = await comparePhotoToCharacters({
         photoDataUri: userPhoto,
-        characterData: charactersForAi,
+        characterData: charactersForAi as any,
       });
 
       if (!comparisonResult.matches || comparisonResult.matches.length === 0) {
@@ -99,7 +129,7 @@ export default function Home() {
       toast({
           variant: "destructive",
           title: "AI 분석 오류",
-          description: "AI 분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+          description: e.message || "AI 분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
       });
       setAiResult(null);
       setCharacterInfo(null);
