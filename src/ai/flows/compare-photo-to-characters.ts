@@ -27,9 +27,6 @@ const ComparePhotoToCharactersInputSchema = z.object({
 export type ComparePhotoToCharactersInput = z.infer<typeof ComparePhotoToCharactersInputSchema>;
 
 const CharacterMatchSchema = z.object({
-  characterName: z
-    .string()
-    .describe('분석된 캐릭터의 이름. 입력으로 제공된 이름과 정확히 일치해야 합니다.'),
   resemblanceExplanation: z
     .string()
     .describe(
@@ -56,7 +53,7 @@ const prompt = ai.definePrompt({
   prompt: `당신은 사용자의 사진과 주어진 캐릭터 목록을 비교 분석하는 AI 전문가입니다.
 
 **지시사항:**
-1.  **순서 엄수 및 이름 복사:** 제공된 '캐릭터 목록'의 순서대로 각 캐릭터를 분석하고, 결과를 **반드시 동일한 순서**로 반환해야 합니다. 결과를 반환할 때, 각 결과 객체의 'characterName' 필드에 입력으로 받은 캐릭터의 'name'을 **그대로 복사**해서 넣어주세요. **절대 이름을 변경하거나 요약하면 안 됩니다.**
+1.  **순서 엄수:** 제공된 '캐릭터 목록'의 순서대로 각 캐릭터를 분석하고, 결과를 **반드시 동일한 순서**로 반환해야 합니다. 결과 배열의 각 항목은 입력된 캐릭터 배열의 항목과 순서대로 일치해야 합니다.
 2.  **시각적 분석 우선:** 사용자의 사진과 각 캐릭터의 이미지를 면밀히 비교하여, 얼굴 형태, 표정, 헤어스타일 등 시각적 공통점을 중심으로 분석하세요. 캐릭터 설명은 부가 정보로만 활용하세요.
 3.  **점수 부여:** 각 캐릭터와의 시각적 유사도를 0점에서 100점 사이의 점수로 평가하여 'resemblanceScore'에 할당하세요. 점수가 높을수록 더 닮은 것입니다.
 4.  **재치있는 설명:** 시각적 분석 결과를 바탕으로, 각 캐릭터와 닮은 이유를 창의적이고 유머러스한 한국어로 'resemblanceExplanation'에 작성해주세요. 시각적 유사성이 낮다면 낮은 점수를 부여하고, 억지로 닮았다고 설명하지 마세요.
@@ -64,7 +61,7 @@ const prompt = ai.definePrompt({
 사용자의 사진:
 {{media url=photoDataUri}}
 
-캐릭터 목록 (이 순서대로 분석하고, 이름을 그대로 복사해서 결과를 반환하세요):
+캐릭터 목록 (이 순서대로 분석하고 결과를 반환하세요):
 {{#each characterData}}
 - 이름: {{this.name}}
   이미지: {{media url=this.imageDataUri}}
@@ -72,7 +69,7 @@ const prompt = ai.definePrompt({
 {{/each}}
 `,
   config: {
-    temperature: 1,
+    temperature: 0.7,
     safetySettings: [
       {
         category: 'HARM_CATEGORY_HATE_SPEECH',
