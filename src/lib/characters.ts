@@ -37,7 +37,7 @@ export const characters: Character[] = [
     imageDataUri: '/character_images/5.png',
   },
   {
-    name: '호무랑',
+    name: '브르르 브르르 파타핌',
     description: '역동적인 포즈와 익살스러운 표정, 코믹 밈의 대명사.',
     imageDataUri: '/character_images/6.png',
   },
