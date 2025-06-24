@@ -22,8 +22,8 @@ export const characters: Character[] = [
     imageDataUri: '/character_images/2.png',
   },
   {
-    name: '카피바라 (Capybara)',
-    description: '세상 평온한 표정, 모든 동물들의 핵인싸.',
+    name: '퉁 퉁 퉁 퉁 퉁 퉁 퉁 퉁 퉁 사후르',
+    description: '리드미컬한 비트와 함께 등장하는 미스터리한 인물. 멈출 수 없는 중독성.',
     imageDataUri: '/character_images/3.png',
   },
   {
