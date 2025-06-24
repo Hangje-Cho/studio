@@ -41,4 +41,14 @@ export const characters: Character[] = [
     description: '역동적인 포즈와 익살스러운 표정, 코믹 밈의 대명사.',
     imageDataUri: '/character_images/6.png',
   },
+  {
+    name: '관짝소년단 (Coffin Dance)',
+    description: '네 명의 댄서가 관을 들고 추는 유쾌하고도 엄숙한 춤. 반전 매력의 소유자.',
+    imageDataUri: '/character_images/7.png',
+  },
+  {
+    name: '무야호 (Muyaho)',
+    description: '산 정상에서 외치는 정겨운 할아버지의 함성. 그 시절 순수함과 유쾌함의 상징.',
+    imageDataUri: '/character_images/8.png',
+  },
 ];
