@@ -57,7 +57,11 @@ export default function Home() {
     setIsLoading(true);
 
     try {
-      const charactersForAiPromises = characters.map(async (c) => {
+      // Shuffle the characters array and pick a random subset to ensure result diversity.
+      const shuffledCharacters = [...characters].sort(() => 0.5 - Math.random());
+      const characterBatch = shuffledCharacters.slice(0, 8);
+
+      const charactersForAiPromises = characterBatch.map(async (c) => {
         try {
           // Fetch the image from the public path
           const response = await fetch(c.imageDataUri);
