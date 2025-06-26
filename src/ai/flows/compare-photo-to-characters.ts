@@ -10,17 +10,6 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-const CharacterInputSchema = z.object({
-  id: z.string().describe('The unique identifier for the character.'),
-  name: z.string().describe('캐릭터의 이름.'),
-  description: z.string().describe('캐릭터에 대한 설명.'),
-  imageDataUri: z
-    .string()
-    .describe(
-      '캐릭터 이미지. MIME 타입과 Base64 인코딩을 포함하는 데이터 URI 형식이어야 합니다.'
-    ),
-});
-
 const ComparePhotoToCharactersInputSchema = z.object({
   photoDataUri: z
     .string()
@@ -28,7 +17,18 @@ const ComparePhotoToCharactersInputSchema = z.object({
       "사용자의 사진. MIME 타입과 Base64 인코딩을 포함하는 데이터 URI 형식이어야 합니다. (예: 'data:<mimetype>;base64,<encoded_data>')"
     ),
   characterData: z
-    .array(CharacterInputSchema)
+    .array(
+      z.object({
+        id: z.string().describe('The unique identifier for the character.'),
+        name: z.string().describe('캐릭터의 이름.'),
+        description: z.string().describe('캐릭터에 대한 설명.'),
+        imageDataUri: z
+          .string()
+          .describe(
+            '캐릭터 이미지. MIME 타입과 Base64 인코딩을 포함하는 데이터 URI 형식이어야 합니다.'
+          ),
+      })
+    )
     .describe('분석할 캐릭터 정보의 배열.'),
 });
 export type ComparePhotoToCharactersInput = z.infer<
@@ -102,11 +102,11 @@ const prompt = ai.definePrompt({
       },
       {
         category: 'HARM_CATEGORY_HARASSMENT',
-        threshold: 'BLOCK_MEDIUM_AND_ABOVE',
+        threshold: 'BLOCK_ONLY_HIGH',
       },
       {
         category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
-        threshold: 'BLOCK_LOW_AND_ABOVE',
+        threshold: 'BLOCK_ONLY_HIGH',
       },
     ],
   },
