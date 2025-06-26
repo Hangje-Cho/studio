@@ -12,7 +12,6 @@ import { useToast } from '@/hooks/use-toast';
 import { characters, Character } from '@/lib/characters';
 
 type DisplayResult = {
-  resemblanceExplanation: string;
   characterName: string;
   characterImageDataUri: string;
 };
@@ -120,7 +119,6 @@ export default function Home() {
       const selectedMatch = topMatches[Math.floor(Math.random() * topMatches.length)];
 
       const resultForDisplay: DisplayResult = {
-        resemblanceExplanation: selectedMatch.resemblanceExplanation,
         characterName: selectedMatch.name,
         characterImageDataUri: selectedMatch.imageDataUri,
       };
@@ -155,7 +153,7 @@ export default function Home() {
           <User className="w-8 h-8 text-primary"/>
         </div>
         <CardTitle className="font-headline text-2xl mt-2">당신의 사진을 업로드하세요</CardTitle>
-        <CardDescription>어떤 이탈리안 브레인롯 캐릭터와 닮았는지 AI가 분석해드립니다.</CardDescription>
+        <CardDescription>어떤 캐릭터와 닮았는지 AI가 분석해드립니다.</CardDescription>
       </CardHeader>
       <CardContent className="px-6 pb-6">
         <div 
@@ -243,9 +241,9 @@ export default function Home() {
         <div className="container mx-auto text-center">
           <div className="flex items-center justify-center gap-3">
             <Brain className="w-10 h-10 text-primary" />
-            <h1 className="text-4xl font-bold font-headline">이탈리안 브레인롯 캐릭터 찾기</h1>
+            <h1 className="text-4xl font-bold font-headline">닮은꼴 캐릭터 찾기</h1>
           </div>
-          <p className="mt-2 text-lg text-muted-foreground">당신의 숨겨진 캐릭터 본능을 찾아보세요!</p>
+          <p className="mt-2 text-lg text-muted-foreground">AI가 당신과 닮은 캐릭터를 찾아드립니다!</p>
         </div>
       </header>
 

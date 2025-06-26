@@ -1,0 +1,20 @@
+[
+  {
+    "id": "1",
+    "name": "기가채드",
+    "description": "JSON 파일에서 불러온 완벽한 턱선, 걷는 조각상.",
+    "imageDataUri": "/character_images/1.png"
+  },
+  {
+    "id": "2",
+    "name": "스키비디 토일렛",
+    "description": "JSON 파일에서 불러온 변기에서 불쑥! 예측불허 서프라이즈.",
+    "imageDataUri": "/character_images/2.png"
+  },
+  {
+    "id": "4",
+    "name": "엄준식",
+    "description": "JSON 파일에서 불러온 살아있는 전설.",
+    "imageDataUri": "/character_images/4.png"
+  }
+]
