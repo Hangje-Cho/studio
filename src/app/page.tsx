@@ -8,15 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import charactersData from '@/lib/characters.json';
+import { characters, Character } from '@/lib/characters';
 
-export type Character = {
-  id: string;
-  name: string;
-  description: string;
-  imageDataUri: string;
-};
-const characters: Character[] = charactersData;
 
 type DisplayResult = {
   characterName: string;
@@ -92,15 +85,22 @@ export default function Home() {
         throw new Error("캐릭터 이미지를 불러오지 못했습니다. 네트워크를 확인하거나 잠시 후 다시 시도해주세요.");
       }
 
+      // AI에 필요한 최소한의 데이터(id, 이미지)만 전달합니다.
+      const aiInputCharacterData = charactersForAi.map(c => ({
+        id: c.id,
+        imageDataUri: c.imageDataUri,
+      }));
+
       const comparisonResult: ComparePhotoToCharactersOutput = await comparePhotoToCharacters({
         photoDataUri: userPhoto,
-        characterData: charactersForAi,
+        characterData: aiInputCharacterData,
       });
 
       if (!comparisonResult.results || comparisonResult.results.length === 0) {
         throw new Error("AI가 분석 결과를 반환하지 않았습니다.");
       }
       
+      // AI가 반환한 id를 기준으로 원본 캐릭터 정보를 매핑합니다.
       const characterMap = new Map(charactersForAi.map(c => [c.id, c]));
 
       const combinedResults = comparisonResult.results.map(result => {
@@ -221,11 +221,6 @@ export default function Home() {
                           fill 
                           style={{ objectFit: 'cover' }} 
                           data-ai-hint="portrait character"
-                          onError={() => {
-                            if (aiResult?.characterImageDataUri !== '/placeholder.svg') {
-                              setAiResult(prev => prev ? ({ ...prev, characterImageDataUri: '/placeholder.svg' }) : null);
-                            }
-                          }}
                         />
                     </div>
                 </div>

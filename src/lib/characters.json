@@ -2,50 +2,50 @@
 [
   {
     "id": "1",
-    "name": "기가채드",
-    "description": "완벽한 턱선, 걷는 조각상.",
+    "name": "캐릭터 예시 1",
+    "description": "이곳에 캐릭터 설명을 입력하세요.",
     "imageDataUri": "/character_images/1.png"
   },
   {
     "id": "2",
-    "name": "캐릭터 2",
-    "description": "이 캐릭터에 대한 설명을 입력하세요.",
+    "name": "캐릭터 예시 2",
+    "description": "이곳에 캐릭터 설명을 입력하세요.",
     "imageDataUri": "/character_images/2.png"
   },
   {
     "id": "3",
-    "name": "캐릭터 3",
-    "description": "이 캐릭터에 대한 설명을 입력하세요.",
+    "name": "캐릭터 예시 3",
+    "description": "이곳에 캐릭터 설명을 입력하세요.",
     "imageDataUri": "/character_images/3.png"
   },
   {
     "id": "4",
-    "name": "카피바라",
-    "description": "온화한 성격, 모든 동물들의 친구.",
+    "name": "캐릭터 예시 4",
+    "description": "이곳에 캐릭터 설명을 입력하세요.",
     "imageDataUri": "/character_images/4.png"
   },
   {
     "id": "5",
-    "name": "캐릭터 5",
-    "description": "이 캐릭터에 대한 설명을 입력하세요.",
+    "name": "캐릭터 예시 5",
+    "description": "이곳에 캐릭터 설명을 입력하세요.",
     "imageDataUri": "/character_images/5.png"
   },
   {
     "id": "6",
-    "name": "캐릭터 6",
-    "description": "이 캐릭터에 대한 설명을 입력하세요.",
+    "name": "캐릭터 예시 6",
+    "description": "이곳에 캐릭터 설명을 입력하세요.",
     "imageDataUri": "/character_images/6.png"
   },
   {
     "id": "7",
-    "name": "캐릭터 7",
-    "description": "이 캐릭터에 대한 설명을 입력하세요.",
-    "imageDataUri": "/character_images/1.png"
+    "name": "캐릭터 예시 7",
+    "description": "이곳에 캐릭터 설명을 입력하세요.",
+    "imageDataUri": "/character_images/7.png"
   },
   {
     "id": "8",
-    "name": "캐릭터 8",
-    "description": "이 캐릭터에 대한 설명을 입력하세요.",
-    "imageDataUri": "/character_images/2.png"
+    "name": "캐릭터 예시 8",
+    "description": "이곳에 캐릭터 설명을 입력하세요.",
+    "imageDataUri": "/character_images/8.png"
   }
 ]
