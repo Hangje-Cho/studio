@@ -101,9 +101,9 @@ export default function Home() {
       const characterMap = new Map(charactersForAi.map(c => [c.id, c]));
 
       const combinedResults = comparisonResult.results.map(result => {
-        const character = characterMap.get(result.characterId);
+        const character = characterMap.get(result.id);
         if (!character) {
-          console.warn(`AI returned an unknown characterId: ${result.characterId}`);
+          console.warn(`AI returned an unknown characterId: ${result.id}`);
           return null;
         }
         return {

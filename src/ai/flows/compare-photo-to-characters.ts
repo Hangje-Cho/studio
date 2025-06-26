@@ -11,7 +11,7 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const CharacterInputSchema = z.object({
-  characterId: z.string().describe('The unique identifier for the character.'),
+  id: z.string().describe('The unique identifier for the character.'),
   name: z.string().describe('캐릭터의 이름.'),
   description: z.string().describe('캐릭터에 대한 설명.'),
   imageDataUri: z
@@ -36,7 +36,7 @@ export type ComparePhotoToCharactersInput = z.infer<
 >;
 
 const CharacterMatchSchema = z.object({
-  characterId: z
+  id: z
     .string()
     .describe('The original unique identifier for the character.'),
   resemblanceExplanation: z
@@ -73,7 +73,7 @@ const prompt = ai.definePrompt({
   prompt: `당신은 사용자의 사진과 주어진 캐릭터 목록을 비교 분석하는 AI 전문가입니다.
 
 **지시사항:**
-1.  **ID 반환 (매우 중요):** 각 캐릭터는 고유한 'characterId'를 가지고 있습니다. 각 캐릭터에 대한 분석 결과를 반환할 때, 입력으로 받은 **'characterId'를 절대 변경하지 말고 그대로** 결과 객체에 포함시켜야 합니다.
+1.  **ID 반환 (매우 중요):** 각 캐릭터는 고유한 'id'를 가지고 있습니다. 각 캐릭터에 대한 분석 결과를 반환할 때, 입력으로 받은 **'id'를 절대 변경하지 말고 그대로** 결과 객체에 포함시켜야 합니다.
 2.  **시각적 분석 우선:** 사용자의 사진과 각 캐릭터의 이미지를 면밀히 비교하여, 얼굴 형태, 표정, 헤어스타일 등 시각적 공통점을 중심으로 분석하세요. 캐릭터 설명은 부가 정보로만 활용하세요.
 3.  **점수 부여:** 각 캐릭터와의 시각적 유사도를 0점에서 100점 사이의 점수로 평가하여 'resemblanceScore'에 할당하세요. 점수가 높을수록 더 닮은 것입니다.
 4.  **재치있는 설명:** 시각적 분석 결과를 바탕으로, 각 캐릭터와 닮은 이유를 창의적이고 유머러스한 한국어로 'resemblanceExplanation'에 작성해주세요. 시각적 유사성이 낮다면 낮은 점수를 부여하고, 억지로 닮았다고 설명하지 마세요.
@@ -81,9 +81,9 @@ const prompt = ai.definePrompt({
 사용자의 사진:
 {{media url=photoDataUri}}
 
-캐릭터 목록 (각 캐릭터의 characterId를 결과에 반드시 포함시키세요):
+캐릭터 목록 (각 캐릭터의 id를 결과에 반드시 포함시키세요):
 {{#each characterData}}
-- ID: {{this.characterId}}
+- ID: {{this.id}}
   이름: {{this.name}}
   이미지: {{media url=this.imageDataUri}}
   설명: {{this.description}}
