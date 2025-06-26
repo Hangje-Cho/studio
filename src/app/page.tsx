@@ -2,9 +2,8 @@
 
 import { useState, useRef } from 'react';
 import Image from 'next/image';
-import { Brain, UploadCloud, Clapperboard, Sparkles, RotateCw, User, Wand2 } from 'lucide-react';
+import { Brain, UploadCloud, Sparkles, RotateCw, User, Wand2 } from 'lucide-react';
 import { comparePhotoToCharacters, ComparePhotoToCharactersOutput } from '@/ai/flows/compare-photo-to-characters';
-import { searchCharacterInfo, SearchCharacterInfoOutput } from '@/ai/flows/search-character-info';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -30,7 +29,6 @@ export default function Home() {
   const [userPhoto, setUserPhoto] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [aiResult, setAiResult] = useState<DisplayResult | null>(null);
-  const [characterInfo, setCharacterInfo] = useState<SearchCharacterInfoOutput | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -56,7 +54,6 @@ export default function Home() {
     }
     setIsLoading(true);
     setAiResult(null);
-    setCharacterInfo(null);
 
     try {
       const shuffledCharacters = [...characters].sort(() => 0.5 - Math.random());
@@ -83,7 +80,7 @@ export default function Home() {
         }
       });
       
-      const charactersForAi = (await Promise.all(charactersForAiPromises)).filter(Boolean) as { id: string, name: string; description: string; imageDataUri: string; }[];
+      const charactersForAi = (await Promise.all(charactersForAiPromises)).filter(Boolean) as (Character & { imageDataUri: string; })[];
 
       if (charactersForAi.length === 0) {
         throw new Error("캐릭터 이미지를 불러오지 못했습니다. 네트워크를 확인하거나 잠시 후 다시 시도해주세요.");
@@ -130,11 +127,6 @@ export default function Home() {
 
       setAiResult(resultForDisplay);
 
-      const infoResult = await searchCharacterInfo({
-        characterName: selectedMatch.name,
-      });
-      setCharacterInfo(infoResult);
-
     } catch (e: any) {
       console.error(e);
       toast({
@@ -143,7 +135,6 @@ export default function Home() {
           description: e.message || "AI 분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
       });
       setAiResult(null);
-      setCharacterInfo(null);
     } finally {
       setIsLoading(false);
     }
@@ -152,7 +143,6 @@ export default function Home() {
   const handleReset = () => {
     setUserPhoto(null);
     setAiResult(null);
-    setCharacterInfo(null);
     if(fileInputRef.current) {
         fileInputRef.current.value = "";
     }
@@ -243,10 +233,6 @@ export default function Home() {
                 <div className="p-6 bg-background rounded-lg border">
                     <h3 className="font-headline text-xl flex items-center gap-2 mb-3"><Sparkles className="text-accent w-6 h-6"/>닮은 이유 (AI 생성)</h3>
                     <p className="text-muted-foreground leading-relaxed">{aiResult?.resemblanceExplanation}</p>
-                </div>
-                <div className="p-6 bg-background rounded-lg border">
-                    <h3 className="font-headline text-xl flex items-center gap-2 mb-3"><Clapperboard className="text-primary w-6 h-6"/>캐릭터 정보 (AI 검색)</h3>
-                    <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{characterInfo?.characterInfo}</p>
                 </div>
             </div>
         </CardContent>
