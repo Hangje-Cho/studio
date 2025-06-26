@@ -2,14 +2,21 @@
 
 import { useState, useRef } from 'react';
 import Image from 'next/image';
-import { Brain, UploadCloud, Sparkles, RotateCw, User, Wand2 } from 'lucide-react';
+import { Brain, UploadCloud, RotateCw, User, Wand2 } from 'lucide-react';
 import { comparePhotoToCharacters, ComparePhotoToCharactersOutput } from '@/ai/flows/compare-photo-to-characters';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { characters, Character } from '@/lib/characters';
+import charactersData from '@/lib/characters.json';
+
+export type Character = {
+  id: string;
+  name: string;
+  description: string;
+  imageDataUri: string;
+};
+const characters: Character[] = charactersData;
 
 type DisplayResult = {
   characterName: string;
@@ -104,10 +111,9 @@ export default function Home() {
         }
         return {
           ...character,
-          resemblanceExplanation: result.resemblanceExplanation,
           score: result.resemblanceScore,
         };
-      }).filter(Boolean) as (Character & { resemblanceExplanation: string; score: number })[];
+      }).filter(Boolean) as (Character & { score: number })[];
       
       if (combinedResults.length === 0) {
         throw new Error("AI 분석 결과와 캐릭터 정보를 매칭하는데 실패했습니다.");

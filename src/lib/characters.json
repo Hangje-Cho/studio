@@ -3,25 +3,49 @@
   {
     "id": "1",
     "name": "기가채드",
-    "description": "JSON 파일에서 불러온 완벽한 턱선, 걷는 조각상.",
+    "description": "완벽한 턱선, 걷는 조각상.",
     "imageDataUri": "/character_images/1.png"
   },
   {
     "id": "2",
-    "name": "스키비디 토일렛",
-    "description": "JSON 파일에서 불러온 변기에서 불쑥! 예측불허 서프라이즈.",
+    "name": "캐릭터 2",
+    "description": "이 캐릭터에 대한 설명을 입력하세요.",
     "imageDataUri": "/character_images/2.png"
   },
   {
     "id": "3",
-    "name": "퉁 퉁 퉁 퉁 퉁 퉁 퉁 퉁 퉁 사후르",
-    "description": "알 수 없는 춤사위, 멈출 수 없는 흥부자.",
+    "name": "캐릭터 3",
+    "description": "이 캐릭터에 대한 설명을 입력하세요.",
     "imageDataUri": "/character_images/3.png"
   },
   {
+    "id": "4",
+    "name": "카피바라",
+    "description": "온화한 성격, 모든 동물들의 친구.",
+    "imageDataUri": "/character_images/4.png"
+  },
+  {
+    "id": "5",
+    "name": "캐릭터 5",
+    "description": "이 캐릭터에 대한 설명을 입력하세요.",
+    "imageDataUri": "/character_images/5.png"
+  },
+  {
     "id": "6",
-    "name": "브르르 브르르 파타핌",
-    "description": "역동적인 몸짓, 유쾌함의 화신.",
+    "name": "캐릭터 6",
+    "description": "이 캐릭터에 대한 설명을 입력하세요.",
     "imageDataUri": "/character_images/6.png"
+  },
+  {
+    "id": "7",
+    "name": "캐릭터 7",
+    "description": "이 캐릭터에 대한 설명을 입력하세요.",
+    "imageDataUri": "/character_images/1.png"
+  },
+  {
+    "id": "8",
+    "name": "캐릭터 8",
+    "description": "이 캐릭터에 대한 설명을 입력하세요.",
+    "imageDataUri": "/character_images/2.png"
   }
 ]
