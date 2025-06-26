@@ -1,14 +1,14 @@
 /**
  * @fileOverview Statically defines the character data for the application.
- * This approach is more robust for deployment environments like Cloudflare Pages
- * as it doesn't rely on filesystem access.
+ * Please replace the placeholder data below with your actual character data from your JSON file.
+ * Ensure that the `id` is a unique string and `imageDataUri` points to a valid image in the `/public` folder.
  */
 
 export type Character = {
   id: string;
   name: string;
   description: string;
-  imageDataUri: string; // This is the public path to the image
+  imageDataUri: string; // This is the public path to the image, e.g., '/character_images/1.png'
 };
 
 export const characters: Character[] = [
@@ -60,4 +60,5 @@ export const characters: Character[] = [
     description: '"무야호~!" 시절의 순수함을 간직한 자유로운 영혼.',
     imageDataUri: '/character_images/8.png',
   },
+  // Add more character data from your JSON file here, following the same format.
 ];

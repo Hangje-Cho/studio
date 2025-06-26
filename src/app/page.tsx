@@ -200,7 +200,7 @@ export default function Home() {
             <h2 className="font-headline text-3xl mt-2">당신은 <span className="text-primary">{aiResult?.characterName}</span> 입니다!</h2>
           </div>
         </CardHeader>
-        <CardContent className="p-6 md:p-8">
+        <CardContent className="p-8">
             <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div className="flex flex-col items-center gap-4">
                     <h3 className="font-headline text-xl">당신의 사진</h3>
@@ -224,15 +224,6 @@ export default function Home() {
                           }}
                         />
                     </div>
-                </div>
-            </div>
-            
-            <Separator className="my-8" />
-
-            <div className="space-y-6">
-                <div className="p-6 bg-background rounded-lg border">
-                    <h3 className="font-headline text-xl flex items-center gap-2 mb-3"><Sparkles className="text-accent w-6 h-6"/>닮은 이유 (AI 생성)</h3>
-                    <p className="text-muted-foreground leading-relaxed">{aiResult?.resemblanceExplanation}</p>
                 </div>
             </div>
         </CardContent>
